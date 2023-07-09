@@ -2,7 +2,8 @@
 
 HardwareSerial MySerial(1);
 
-void EspInterface::begin() {
+void EspInterface::begin()
+{
   pinMode(ESP_RST, OUTPUT);
   pinMode(ESP_ZERO, OUTPUT);
 
@@ -11,14 +12,14 @@ void EspInterface::begin() {
   digitalWrite(ESP_ZERO, HIGH);
 
   Serial.println("Checking for ESP8266...");
-
+  
   MySerial.begin(BAUD, SERIAL_8N1, 27, 26);
 
   delay(100);
 
-  #ifdef HAS_SCREEN
-    display_obj.tft.println("Checking for ESP8266...");
-  #endif
+#ifdef HAS_SCREEN
+  display_obj.tft.println("Checking for ESP8266...");
+#endif
 
   this->bootRunMode();
 
@@ -33,50 +34,55 @@ void EspInterface::begin() {
 
   String display_string = "";
 
-  while (MySerial.available()) {
+  while (MySerial.available())
+  {
     display_string.concat((char)MySerial.read());
   }
 
   display_string.trim();
 
   Serial.println("\nDisplay string: " + (String)display_string);
-  
-  if (display_string == "ESP8266 Pong") {
-    #ifdef HAS_SCREEN
-      display_obj.tft.setTextColor(TFT_GREEN, TFT_BLACK);
-      display_obj.tft.println("ESP8266 Found!");
-      display_obj.tft.setTextColor(TFT_CYAN, TFT_BLACK);
-    #endif
+
+  if (display_string == "ESP8266 Pong")
+  {
+#ifdef HAS_SCREEN
+    display_obj.tft.setTextColor(TFT_GREEN, TFT_BLACK);
+    display_obj.tft.println("ESP8266 Found!");
+    display_obj.tft.setTextColor(TFT_CYAN, TFT_BLACK);
+#endif
     Serial.println("ESP8266 Found!");
     this->supported = true;
   }
-  else {
-    #ifdef HAS_SCREEN
-      display_obj.tft.setTextColor(TFT_RED, TFT_BLACK);
-      display_obj.tft.println("ESP8266 Not Found");
-      display_obj.tft.setTextColor(TFT_CYAN, TFT_BLACK);
-    #endif
+  else
+  {
+#ifdef HAS_SCREEN
+    display_obj.tft.setTextColor(TFT_RED, TFT_BLACK);
+    display_obj.tft.println("ESP8266 Not Found");
+    display_obj.tft.setTextColor(TFT_CYAN, TFT_BLACK);
+#endif
   }
 
   this->initTime = millis();
 }
 
-void EspInterface::RunUpdate() {
+void EspInterface::RunUpdate()
+{
   this->bootProgramMode();
-  #ifdef HAS_SCREEN
-    display_obj.tft.setTextWrap(true);
-    display_obj.tft.setFreeFont(NULL);
-    display_obj.tft.setCursor(0, 100);
-    display_obj.tft.setTextSize(1);
-    display_obj.tft.setTextColor(TFT_GREEN);
-  
-    display_obj.tft.println("Waiting for serial data...");
-  
-    display_obj.tft.setTextColor(TFT_WHITE);
-  #endif
+#ifdef HAS_SCREEN
+  display_obj.tft.setTextWrap(true);
+  display_obj.tft.setFreeFont(NULL);
+  display_obj.tft.setCursor(0, 100);
+  display_obj.tft.setTextSize(1);
+  display_obj.tft.setTextColor(TFT_GREEN);
+
+  display_obj.tft.println("Waiting for serial data...");
+
+  display_obj.tft.setTextColor(TFT_WHITE);
+#endif
 }
 
-void EspInterface::bootProgramMode() {
+void EspInterface::bootProgramMode()
+{
   Serial.println("[!] Setting ESP12 in program mode...");
   digitalWrite(ESP_ZERO, LOW);
   delay(100);
@@ -90,7 +96,8 @@ void EspInterface::bootProgramMode() {
   Serial.begin(57600);
 }
 
-void EspInterface::bootRunMode() {
+void EspInterface::bootRunMode()
+{
   Serial.end();
   Serial.begin(115200);
   Serial.println("[!] Setting ESP12 in run mode...");
@@ -104,32 +111,40 @@ void EspInterface::bootRunMode() {
   Serial.println("[!] Complete");
 }
 
-void EspInterface::program() {
-  if (MySerial.available()) {
+void EspInterface::program()
+{
+  if (MySerial.available())
+  {
     Serial.write((uint8_t)MySerial.read());
   }
 
-  if (Serial.available()) {
-    #ifdef HAS_SCREEN
-      display_obj.tft.print(".");
-    #endif
-    while (Serial.available()) {
+  if (Serial.available())
+  {
+#ifdef HAS_SCREEN
+    display_obj.tft.print(".");
+#endif
+    while (Serial.available())
+    {
       MySerial.write((uint8_t)Serial.read());
     }
   }
 }
 
-void EspInterface::main(uint32_t current_time) {
-  if (current_time - this->initTime >= 1000) {
+void EspInterface::main(uint32_t current_time)
+{
+  if (current_time - this->initTime >= 1000)
+  {
     this->initTime = millis();
-    //MySerial.write("PING");
+    // MySerial.write("PING");
   }
-  
-  while (MySerial.available()) {
+
+  while (MySerial.available())
+  {
     Serial.print((char)MySerial.read());
   }
 
-  if (Serial.available()) {
+  if (Serial.available())
+  {
     MySerial.write((uint8_t)Serial.read());
   }
 }

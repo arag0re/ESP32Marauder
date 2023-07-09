@@ -280,6 +280,27 @@ void CommandLine::runCommand(String input) {
       menu_function_obj.changeMenu(menu_function_obj.current_menu);
     #endif
   }
+  // LED command
+  else if (cmd_args.get(0) == LED_CMD) {
+    int hex_arg = this->argSearch(&cmd_args, "-s");
+    int pat_arg = this->argSearch(&cmd_args, "-p");
+    #ifdef PIN
+      if (hex_arg != 0) {
+        String hexstring = cmd_args.get(hex_arg + 1);
+        int number = (int)strtol(&hexstring[1], NULL, 16);
+        int r = number >> 16;
+        int g = number >> 8 & 0xFF;
+        int b = number & 0xFF;
+        //Serial.println(r);
+        //Serial.println(g);
+        //Serial.println(b);
+        led_obj.setColor(r, g, b);
+        led_obj.setMode(MODE_CUSTOM);
+      }
+    #else
+      Serial.println("This hardware does not support neopixel")
+    #endif
+  }
   // ls command
   else if (cmd_args.get(0) == LS_CMD) {
     if (cmd_args.size() > 1)
