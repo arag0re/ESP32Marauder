@@ -468,7 +468,7 @@
   #endif
 
   #ifdef MARAUDER_FLIPPER
-    #define SD_CS 10
+    #define SD_CS 5
   #endif
 
   #ifdef ESP32_LDDB
@@ -541,6 +541,8 @@
     #define PIN 17
   #elif defined(MARAUDER_DEV_BOARD_PRO)
     #define PIN 16
+  #elif defined(MARAUDER_FLIPPER)
+    #define PIN 39
   #else
     #define PIN 25
   #endif

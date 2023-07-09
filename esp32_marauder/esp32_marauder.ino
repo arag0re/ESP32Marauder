@@ -4,7 +4,8 @@ Flash Frequency: 80MHz
 Partition Scheme: Minimal SPIFFS
 https://www.online-utility.org/image/convert/to/XBM
 */
-
+#include <HardwareSerial.h>
+HardwareSerial MySerial(1);
 #include "configs.h"
 
 #ifndef HAS_SCREEN
@@ -148,7 +149,7 @@ void setup()
 
   delay(10);
 
-  Serial.begin(115200);
+  MySerial.begin(115200, SERIAL_8N1, 16, 15);
 
   #ifdef WRITE_PACKETS_SERIAL
     // Starts a second serial channel to stream the captured packets
@@ -157,7 +158,7 @@ void setup()
 
   //Serial.println("\n\nHello, World!\n");
 
-  Serial.println("ESP-IDF version is: " + String(esp_get_idf_version()));
+  MySerial.println("ESP-IDF version is: " + String(esp_get_idf_version()));
 
   //#ifdef HAS_SCREEN
   //  Serial.println("Has Screen");
@@ -237,7 +238,7 @@ void setup()
         display_obj.tft.println(F(text_table0[3]));
       #endif
     } else {
-      Serial.println(F("SD Card NOT Supported"));
+      MySerial.println(F("SD Card NOT Supported"));
       #ifdef HAS_SCREEN
         display_obj.tft.setTextColor(TFT_RED, TFT_BLACK);
         display_obj.tft.println(F(text_table0[4]));
@@ -300,7 +301,7 @@ void setup()
   //Serial.println(F("       By: justcallmekoko\n"));
   //Serial.println(F("--------------------------------\n\n"));
   
-  Serial.println("CLI Ready");
+  MySerial.println("CLI Ready");
   cli_obj.RunSetup();
 }
 
